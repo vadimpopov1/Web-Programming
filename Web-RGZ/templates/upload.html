@@ -1,0 +1,168 @@
+{% extends "base.html" %}
+
+{% block title %}{{ _('Upload Video') }}{% endblock %}
+
+{% block content %}
+<div class="upload-container">
+    <h2>{{ _('Upload Video') }}</h2>
+    
+    <div class="upload-options">
+        <div id="dropZone" class="drop-zone">
+            <div class="drop-content">
+                <svg class="upload-icon" viewBox="0 0 24 24">
+                    <path d="M19,13H13V19H11V13H5V11H11V5H13V11H19V13Z" />
+                </svg>
+                <h3>{{ _('Drag & Drop your video here') }}</h3>
+                <p class="hint-text">{{ _('or') }}</p>
+                <button id="browseBtn" class="browse-btn">{{ _('Browse Files') }}</button>
+                <p class="hint-text">{{ _('Only MP4 files are accepted') }}</p>
+            </div>
+        </div>
+
+        <form method="POST" enctype="multipart/form-data" id="uploadForm">
+            {{ form.hidden_tag() }}
+            <input type="file" id="fileInput" name="file" accept="video/mp4" style="display: none;">
+            
+            <div id="fileInfo" class="file-info" style="display: none;">
+                <div class="file-preview">
+                    <video id="videoPreview" controls></video>
+                    <div class="file-details">
+                        <span id="fileName"></span>
+                        <span id="fileSize"></span>
+                        <button type="button" id="removeBtn" class="remove-btn">{{ _('Remove') }}</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                {{ form.title.label }}
+                {{ form.title(class="form-control") }}
+                {% for error in form.title.errors %}
+                    <span style="color: var(--danger-color);">{{ error }}</span>
+                {% endfor %}
+            </div>
+
+            <button type="submit" id="uploadBtn" class="upload-btn" disabled>
+                {{ _('Upload Video') }}
+                <div id="uploadSpinner" class="spinner" style="display: none;"></div>
+            </button>
+        </form>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const dropZone = document.getElementById('dropZone');
+    const fileInput = document.getElementById('fileInput');
+    const browseBtn = document.getElementById('browseBtn');
+    const fileInfo = document.getElementById('fileInfo');
+    const videoPreview = document.getElementById('videoPreview');
+    const fileName = document.getElementById('fileName');
+    const fileSize = document.getElementById('fileSize');
+    const removeBtn = document.getElementById('removeBtn');
+    const uploadBtn = document.getElementById('uploadBtn');
+    const uploadForm = document.getElementById('uploadForm');
+    const uploadSpinner = document.getElementById('uploadSpinner');
+
+    ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+        dropZone.addEventListener(eventName, preventDefaults, false);
+        document.body.addEventListener(eventName, preventDefaults, false);
+    });
+
+    ['dragenter', 'dragover'].forEach(eventName => {
+        dropZone.addEventListener(eventName, highlight, false);
+    });
+
+    ['dragleave', 'drop'].forEach(eventName => {
+        dropZone.addEventListener(eventName, unhighlight, false);
+    });
+    dropZone.addEventListener('drop', handleDrop, false);
+    browseBtn.addEventListener('click', () => fileInput.click());
+    fileInput.addEventListener('change', handleFiles);
+    removeBtn.addEventListener('click', resetFileInput);
+    uploadForm.addEventListener('submit', function(e) {
+        if (!fileInput.files.length) {
+            e.preventDefault();
+            alert('{{ _("Please select a video file") }}');
+        } else {
+            uploadBtn.disabled = true;
+            uploadSpinner.style.display = 'block';
+        }
+    });
+
+    function preventDefaults(e) {
+        e.preventDefault();
+        e.stopPropagation();
+    }
+
+    function highlight() {
+        dropZone.classList.add('highlight');
+    }
+
+    function unhighlight() {
+        dropZone.classList.remove('highlight');
+    }
+
+    function handleDrop(e) {
+        const dt = e.dataTransfer;
+        const files = dt.files;
+        
+        if (files.length) {
+
+            if (files.length > 1) {
+                alert('{{ _("Please upload only one file at a time") }}');
+                return;
+            }
+            
+            const file = files[0];
+            
+            if (!file.type.match('video/mp4')) {
+                alert('{{ _("Only MP4 files are allowed") }}');
+                return;
+            }
+            
+            fileInput.files = files;
+            handleFiles({ target: { files: files } });
+        }
+    }
+
+    function handleFiles(e) {
+        const files = e.target.files;
+        
+        if (files.length) {
+            const file = files[0];
+            
+            if (!file.type.match('video/mp4')) {
+                alert('{{ _("Only MP4 files are allowed") }}');
+                resetFileInput();
+                return;
+            }
+            
+            fileInfo.style.display = 'block';
+            fileName.textContent = file.name;
+            fileSize.textContent = formatFileSize(file.size);
+            const videoURL = URL.createObjectURL(file);
+            videoPreview.src = videoURL;
+            uploadBtn.disabled = false;
+        }
+    }
+
+    function resetFileInput() {
+        fileInput.value = '';
+        fileInfo.style.display = 'none';
+        videoPreview.src = '';
+        uploadBtn.disabled = true;
+    }
+
+    function formatFileSize(bytes) {
+        if (bytes === 0) return '0 Bytes';
+        
+        const k = 1024;
+        const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+        const i = Math.floor(Math.log(bytes) / Math.log(k));
+        
+        return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+    }
+});
+</script>
+{% endblock %}

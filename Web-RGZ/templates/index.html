@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+
+{% block title %}Home{% endblock %}
+
+{% block content %}
+    <h2>{{ _('Latest Videos') }}</h2>
+    {% if videos %}
+        <div class="video-grid">
+            {% for video in videos %}
+                <div class="video-card">
+                    <a href="{{ url_for('video', video_id=video.id) }}">
+                        <video width="320" height="240" controls>
+                            <source src="{{ url_for('static', filename='uploads/' + video.filename) }}" type="video/mp4">
+                            {{_('Your browser does not support the video tag.') }}
+                        </video>
+                        <h3>{{ video.title }}</h3>
+                        <p>{{ _('Uploaded by ') }}{{ video.user.username }}</p>
+                    </a>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <p>{{ _('No videos found.') }}</p>
+    {% endif %}
+{% endblock %}

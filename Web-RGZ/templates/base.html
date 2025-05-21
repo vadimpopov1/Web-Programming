@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ _('Loomix - ') }}{% block title %}{% endblock %}</title>
+    <link rel="stylesheet" href="/static/styles/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header>
+        <div class="header-left">
+            <h1><a href="{{ url_for('index') }}">Loomix</a></h1>
+        </div>
+        
+        <div class="header-right">
+            <div class="search-container">
+                <form action="{{ url_for('search') }}" method="GET">
+                    <input type="text" name="query" placeholder="{{ _('Search...') }}" value="{{ request.args.get('query', '') }}">
+                </form>
+            </div>
+            
+            <nav>
+                {% if request.cookies.get('token') %}
+                    <a href="{{ url_for('upload') }}">{{ _('Upload') }}</a>
+                    <a href="{{ url_for('logout') }}">{{ _('Logout') }}</a>
+                {% else %}
+                    <a href="{{ url_for('login') }}">{{ _('Login') }}</a>
+                    <a href="{{ url_for('register') }}">{{ _('Register') }}</a>
+                {% endif %}
+            </nav>
+        </div>
+    </header>
+    
+    <main>
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                <div class="flashes">
+                    {% for message in messages %}
+                        <div>{{ message }}</div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
+        
+        {% block content %}{% endblock %}
+    </main>
+    
+    <div class="language-switcher-corner">
+        <a href="{{ url_for('set_lang', lang='ru') }}" {% if current_language == 'ru' %}class="active"{% endif %}>RU</a>
+        <span>|</span>
+        <a href="{{ url_for('set_lang', lang='en') }}" {% if current_language == 'en' %}class="active"{% endif %}>EN</a>
+    </div>
+</body>
+</html>

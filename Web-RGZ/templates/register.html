@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+
+{% block title %}Register{% endblock %}
+
+{% block content %}
+<div class="authorization">
+    <h2>{{ _('Register') }}</h2>
+    <form method="POST">
+        <label for="username">{{ _('Username') }}:</label>
+        <input type="text" id="username" name="username" required>
+        
+        <label for="email">{{ _('Email') }}:</label>
+        <input type="email" id="email" name="email" required>
+
+        <label for="password">{{ _('Password') }}:</label>
+        <input type="password" id="password" name="password" required>
+        <br>
+        <button type="submit">{{ _('Register') }}</button>
+    </form>
+</div>
+{% endblock %}

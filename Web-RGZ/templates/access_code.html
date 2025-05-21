@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+
+{% block title %}{{ _('Verify Email') }}{% endblock %}
+
+{% block content %}
+<div class="authorization">
+    <div class="auth-header">
+        <svg class="auth-icon" viewBox="0 0 24 24">
+            <path d="M22 6C22 4.9 21.1 4 20 4H4C2.9 4 2 4.9 2 6V18C2 19.1 2.9 20 4 20H20C21.1 20 22 19.1 22 18V6M20 6L12 11L4 6H20M20 18H4V8L12 13L20 8V18Z" />
+        </svg>
+        <h2>{{ _('Verify Your Email') }}</h2>
+    </div>
+    
+    <div class="auth-message">
+        <p>{{ _('We have sent a verification code to') }}</p>
+        <div class="email-display">{{ email }}</div>
+        <p>{{ _('Please enter the 6-digit code below to verify your email address.') }}</p>
+    </div>
+    
+    <form method="POST" action="{{ url_for('access_code', token=token) }}" class="code-form">
+        <div class="form-group">
+            <label for="code">{{ _('Verification Code') }}</label>
+            <input type="text" id="code" name="code" required maxlength="6" pattern="\d{6}" 
+                   title="{{ _('Please enter a 6-digit code') }}" class="code-input">
+        </div>
+        
+        <button type="submit" class="auth-button">
+            {{ _('Verify Email') }}
+            <svg class="button-icon" viewBox="0 0 24 24">
+                <path d="M2,21L23,12L2,3V10L17,12L2,14V21Z" />
+            </svg>
+        </button>
+    </form>
+    
+    <div class="auth-footer">
+        <p>{{ _("Didn't receive the code?") }}</p>
+        <a href="{{ url_for('register') }}" class="resend-link">
+            {{ _('Resend Code') }}
+            <svg class="link-icon" viewBox="0 0 24 24">
+                <path d="M14,12L10,8V11H2V13H10V16L14,12M22,12A10,10 0 0,1 12,22A10,10 0 0,1 2,12A10,10 0 0,1 12,2A10,10 0 0,1 22,12M20,12A8,8 0 0,0 12,4A8,8 0 0,0 4,12A8,8 0 0,0 12,20A8,8 0 0,0 20,12Z" />
+            </svg>
+        </a>
+    </div>
+</div>
+{% endblock %}
