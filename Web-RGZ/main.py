@@ -32,17 +32,17 @@ app.config['LANGUAGES'] = {
 }
 
 babel = Babel(app)
-app.config['SECRET_KEY'] = 'efowencwpk12i921djweo290joadj-1pjsadnasdkpwdljwoqdpwk'
+app.config['SECRET_KEY'] = 'Ваш секретный ключ' // Укажите какой либо набор букв/цифр/спец символов
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///videos.db'
 app.config['UPLOAD_FOLDER'] = 'static/uploads'
 app.config['ALLOWED_EXTENSIONS'] = {'mp4', 'webm', 'ogg'}
 app.config['MAX_CONTENT_LENGTH'] = 100 * 1024 * 1024 * 10  # 1GB
-app.config['MAIL_SERVER'] = 'smtp.mail.ru'
+app.config['MAIL_SERVER'] = 'Сервис' // Ваш сервис почты
 app.config['MAIL_PORT'] = 587
 app.config['MAIL_USE_TLS'] = True
-app.config['MAIL_USERNAME'] = 'loomixverification@mail.ru'
-app.config['MAIL_PASSWORD'] = 'eztTDcENFdGKe2pXFGrJ'
-app.config['MAIL_DEFAULT_SENDER'] = 'loomixverification@mail.ru'
+app.config['MAIL_USERNAME'] = 'ВашаПочта@адрес' // Почтовый ящик
+app.config['MAIL_PASSWORD'] = 'Пароль' // Пароль от вашей почты
+app.config['MAIL_DEFAULT_SENDER'] = 'ВашаПочта@адрес' // Почтовый ящик
 app.config['BABEL_DEFAULT_LOCALE'] = 'ru'
 
 db = SQLAlchemy(app)
